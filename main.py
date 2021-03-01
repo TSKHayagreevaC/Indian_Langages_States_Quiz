@@ -1,16 +1,43 @@
-# This is a sample Python script.
+import turtle
+import pandas
 
-# Press Shift+F10 to execute it or replace it with your code.
-# Press Double Shift to search everywhere for classes, files, tool windows, actions, and settings.
+screen = turtle.Screen()
+screen.title("Indian-States-Languages")
 
+image = "USA_states_img.gif"
+screen.addshape(image)
+turtle.shape(image)
 
-def print_hi(name):
-    # Use a breakpoint in the code line below to debug your script.
-    print(f'Hi, {name}')  # Press Ctrl+F8 to toggle the breakpoint.
+data = pandas.read_csv("USA_States_50.csv")
+all_states = data.state.to_list()
+guessed_states = []
 
+while len(guessed_states) < 50:
+    answer_state = screen.textinput(title=f"{(guessed_states)} / 50 Guess The State",
+                                    prompt="What Is Another State's name?").title()
+    if answer_state == "Exit":
+        missing_states = []
+        for state in all_states:
+            if state not in guessed_states:
+                missing_states.append(state)
+        new_data = pandas.DataFrame(missing_states)
+        new_data.to_csv("states_to_learn.csv")
+        break
+    if answer_state in all_states:
+        guessed_states.append(answer_state)
+        t = turtle.Turtle()
+        t.hideturtle()
+        t.penup()
+        state_data = data[data.state == answer_state]
+        t.goto(int(state_data.x), int(state_data.y))
+        t.write(state_data.state.item())
 
-# Press the green button in the gutter to run the script.
-if __name__ == '__main__':
-    print_hi('PyCharm')
+screen.exitonclick()
 
-# See PyCharm help at https://www.jetbrains.com/help/pycharm/
+# def get_mouse_click_coordinates(x, y):
+#     print(x, y)
+#
+#
+# turtle.onscreenclick(get_mouse_click_coordinates)
+#
+# turtle.mainloop()
